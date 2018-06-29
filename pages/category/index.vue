@@ -1,30 +1,40 @@
 <template>
   <section class="container">
     <div>
-      <logo/>
       <h1 class="title">
-        novicell-spa-frontend
+        Test {{ theId }}
       </h1>
-      <no-ssr placeholder="Loading...">
-        <h2 class="subtitle">
-          NO SSR
-        </h2>
-      </no-ssr>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green">Documentation</a>
-        <a href="https://github.com/nuxt/nuxt.js" target="_blank" class="button--grey">GitHub</a>
-      </div>
+      <ul>
+        <li v-for="page in content" :key="page.id">
+          <nuxt-link :to="'/' + page.slug + '/'">{{ page.title.rendered }}</nuxt-link>
+        </li>
+      </ul>
     </div>
   </section>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import axios from 'axios';
 
 export default {
-  components: {
-    Logo
-  }
+  computed: {
+    theId() {
+      return this.$route.params.id;
+    },
+  },
+  async asyncData({ params }) {
+    try {
+      const { data } = await axios.get(`https://wpdev.jonashavmoeller.dk/wp-json/wp/v2/posts?categories=${params.id}`);
+      return { content: data };
+    } catch (error) {
+      console.log(error);
+      return {
+        content: {
+          name: 'Unknown',
+        },
+      };
+    }
+  },
 }
 </script>
 

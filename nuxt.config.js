@@ -1,4 +1,5 @@
 const pkg = require('./package')
+const serveStatic = require('serve-static')
 
 module.exports = {
   mode: 'universal',
@@ -49,6 +50,20 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
+  },
+  router: {
+    extendRoutes (routes, resolve) {
+      routes.push({
+        name: 'dynamic-category',
+        path: '*/c-:id?',
+        component: resolve(__dirname, 'pages/category/index.vue')
+      },
+      {
+        name: 'dynamic-routes',
+        path: '*',
+        component: resolve(__dirname, 'pages/dynamic/index.vue')
+      })
+    } 
   },
 
   /*
